@@ -7,13 +7,41 @@
   
   <body>
     <h1>Sperax Testnet Faucet!</h1>
-    <form action="http://localhost:3000/address" method="POST">
-      <input type="text" name="address" /> <br>
-      <button type="submit"> Get ETH </button> <br>
-    </form>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script> -->
+    <input type="text" id="address" /> <br>
+    <button onclick="formsubmit()"> Get ETH </button> <br>
+
+    <h3>Transaction hash: <i id="hash"></i></h3>
+
     <script src="script.js"></script>
+    <script>
+      function formsubmit () {
+
+        let data = {
+          'address': document.getElementById('address').value
+        }
+
+        fetch("http://localhost:3000/address", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          }, 
+          body: JSON.stringify(data)
+        })
+        .then(data => {
+          data.json().then((data) => {
+            console.log(data);
+            if (data.transactionHash == "issues") {
+              alert("Can't get tokens more than once in a day!")
+            }
+            document.getElementById("hash").innerHTML = data.transactionHash
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }
+    </script>
   </body>
 
 
